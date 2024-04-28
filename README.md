@@ -1,11 +1,11 @@
 # c4py
 
-> python c4py.py hello.c
-> python c4py.py -s hello.c
-> python c4py.py -d hello.c
+&gt; python c4py.py hello.c<br>
+&gt; python c4py.py -s hello.c<br>
+&gt; python c4py.py -d hello.c<p>
 
-> python c4py.py c4.c hello.c
-> python c4py.py c4.c -s hello.c
-> python c4py.py c4.c -d hello.c
+&gt; python c4py.py c4.c hello.c<br>
+&gt; python c4py.py c4.c -s hello.c<br>
+&gt; python c4py.py c4.c -d hello.c<p>
 
-> python c4py.py c4.c c4.c hello.c
+&gt; python c4py.py c4.c c4.c hello.c
