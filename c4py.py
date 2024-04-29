@@ -430,7 +430,7 @@ if __name__=='__main__':
   if len(args)> 0 and args[0] == '-d': 
     debug = 1; args = args[1:]
   if len(args) < 1:
-    print(f"usage: c4 [-s] [-d] file ...\n")
+    print(f"usage: python c4py.py [-s] [-d] file ...\n")
     sys.exit(1)
 
   sym = mem.malloc(poolsz)
