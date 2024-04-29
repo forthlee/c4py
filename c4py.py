@@ -148,10 +148,10 @@ def next():
                ((tk >= '0' and tk <= '9') or 
                 (tk >= 'a' and tk <= 'f') or 
                 (tk >= 'A' and tk <= 'F'))):
-          ival = ival * 16 + (tk & 15) + (9 if tk >= 'A' else 0)
+          ival = ival * 16 + (ord(tk) & 15) + (9 if tk >= 'A' else 0)
           p += 1
       else:
-        while (source[p] >= '0' and source[p] <= '7'): ival = ival * 8 + source[p] - '0'; p += 1
+        while (source[p] >= '0' and source[p] <= '7'): ival = ival * 8 + int(source[p]); p += 1
       tk = Num
       return
     elif (tk == '/'):
