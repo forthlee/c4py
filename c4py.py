@@ -119,8 +119,7 @@ def next():
       while (source[p] != '\0' and source[p] != '\n'): p += 1
     elif ((tk >= 'a' and tk <= 'z') or (tk >= 'A' and tk <= 'Z') or tk == '_'):
       pp = p - 1
-      tk = 0
-      M = int(1e9 + 7)
+      tk = ord(tk)
       while ((source[p] >= 'a' and source[p] <= 'z') or
              (source[p] >= 'A' and source[p] <= 'Z') or 
              (source[p] >= '0' and source[p] <= '9') or
