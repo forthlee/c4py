@@ -225,12 +225,12 @@ def expr(lev):
   t = d = 0
 
   if (tk == 0): print(f"{line}: unexpected eof in expression"); exit(-1)
-  elif (tk == Num): e += 8*1; mem[e] = IMM; e += 8*1; mem[e] = ival; next(); ty = INT
+  elif (tk == Num): e += 8; mem[e] = IMM; e += 8; mem[e] = ival; next(); ty = INT
   elif (tk == '"'):
-    e += 8*1; mem[e] = IMM; e += 8*1; mem[e] = ival
+    e += 8; mem[e] = IMM; e += 8; mem[e] = ival
     next()
     while (tk == '"'): next()
-    data = (data + 8*1) & (-8*1); ty = PTR
+    data = (data + 8) & (-8); ty = PTR
   elif (tk == Sizeof):
     next()
     if (tk == '('): next()
@@ -241,7 +241,7 @@ def expr(lev):
     while (tk == Mul): next(); ty = ty + PTR
     if (tk == ')'): next()
     else: print(f"{line}: close paren expected in sizeof"); exit(-1)
-    e += 8*1; mem[e] = IMM; e += 8*1; mem[e] = 1  if (ty == CHAR) else 8
+    e += 8; mem[e] = IMM; e += 8; mem[e] = 1  if (ty == CHAR) else 8
     ty = INT
   elif (tk == Id):
     d = id; next()
@@ -249,24 +249,24 @@ def expr(lev):
       next()
       t = 0
       while (tk != ')'): 
-        expr(Assign); e += 8*1; mem[e] = PSH; t += 1
+        expr(Assign); e += 8; mem[e] = PSH; t += 1
         if (tk == ','): next()
       next()
       if (memInt(d+Class) == Sys):        
-        e += 8*1; mem[e] = memInt(d+Val)
+        e += 8; mem[e] = memInt(d+Val)
       elif (memInt(d+Class) == Fun):         
-        e += 8*1; mem[e] = JSR; e += 8*1; mem[e] = memInt(d+Val)
+        e += 8; mem[e] = JSR; e += 8; mem[e] = memInt(d+Val)
       else: print(f"{line}: bad function call"); exit(-1)
       if (t):         
-        e += 8*1; mem[e] = ADJ; e += 8*1; mem[e] = t
+        e += 8; mem[e] = ADJ; e += 8; mem[e] = t
       ty = memInt(d+Type)
     elif (memInt(d+Class) == Num):
-      e += 8*1; mem[e] = IMM; e += 8*1; mem[e] = memInt(d+Val); ty = INT
+      e += 8; mem[e] = IMM; e += 8; mem[e] = memInt(d+Val); ty = INT
     else:
-      if (memInt(d+Class) == Loc):e += 8*1; mem[e] = LEA; e += 8*1; mem[e] = loc - memInt(d+Val)
-      elif (memInt(d+Class) == Glo): e += 8*1; mem[e] = IMM; e += 8*1; mem[e] = memInt(d+Val)
+      if (memInt(d+Class) == Loc):e += 8; mem[e] = LEA; e += 8; mem[e] = loc - memInt(d+Val)
+      elif (memInt(d+Class) == Glo): e += 8; mem[e] = IMM; e += 8; mem[e] = memInt(d+Val)
       else: print(f"{line}: undefined variable"); exit(-1)
-      e += 8*1; mem[e] = LC if ((ty := memInt(d+Type)) == CHAR) else LI 
+      e += 8; mem[e] = LC if ((ty := memInt(d+Type)) == CHAR) else LI 
   elif (tk == '('):
     next()
     if (tk == Int or tk == Char):
@@ -284,29 +284,29 @@ def expr(lev):
     next(); expr(Inc)
     if (ty > INT): ty = ty - PTR 
     else: print(f"{line}: bad dereference"); exit(-1)
-    e += 8*1; mem[e] = LC if (ty == CHAR) else LI
+    e += 8; mem[e] = LC if (ty == CHAR) else LI
   elif (tk == And):
     next(); expr(Inc)
     if (mem[e] == LC or mem[e] == LI): e -= 8 
     else: print(f"{line}: bad address-of"); exit(-1)
     ty = ty + PTR
-  elif (tk == '!'): next(); expr(Inc); e += 8*1; mem[e] = PSH; e += 8*1; mem[e] = IMM; e += 8*1; mem[e] = 0; e += 8*1; mem[e] = EQ; ty = INT
-  elif (tk == '~'): next(); expr(Inc); e += 8*1; mem[e] = PSH; e += 8*1; mem[e] = IMM; e += 8*1; mem[e] = -1; e += 8*1; mem[e] = XOR; ty = INT
+  elif (tk == '!'): next(); expr(Inc); e += 8; mem[e] = PSH; e += 8; mem[e] = IMM; e += 8; mem[e] = 0; e += 8; mem[e] = EQ; ty = INT
+  elif (tk == '~'): next(); expr(Inc); e += 8; mem[e] = PSH; e += 8; mem[e] = IMM; e += 8; mem[e] = -1; e += 8; mem[e] = XOR; ty = INT
   elif (tk == Add): next(); expr(Inc); ty = INT
   elif (tk == Sub):
-    next(); e += 8*1; mem[e] = IMM
-    if (tk == Num): e += 8*1; mem[e] = -ival; next() 
-    else: e += 8*1; mem[e] = -1; e += 8*1; mem[e] = PSH; expr(Inc); e += 8*1; mem[e] = MUL
+    next(); e += 8; mem[e] = IMM
+    if (tk == Num): e += 8; mem[e] = -ival; next() 
+    else: e += 8; mem[e] = -1; e += 8; mem[e] = PSH; expr(Inc); e += 8; mem[e] = MUL
     ty = INT
   elif (tk == Inc or tk == Dec):
     t = tk; next(); expr(Inc)
-    if (mem[e] == LC): mem[e] = PSH; e += 8*1; mem[e] = LC
-    elif (mem[e] == LI): mem[e] = PSH; e += 8*1; mem[e] = LI
+    if (mem[e] == LC): mem[e] = PSH; e += 8; mem[e] = LC
+    elif (mem[e] == LI): mem[e] = PSH; e += 8; mem[e] = LI
     else: print(f"{line}: bad lvalue in pre-increment"); exit(-1)
-    e += 8*1; mem[e] = PSH
-    e += 8*1; mem[e] = IMM; e += 8*1; mem[e] = 8 if (ty > PTR) else 1
-    e += 8*1; mem[e] = ADD if (t == Inc)   else SUB
-    e += 8*1; mem[e] = SC  if (ty == CHAR) else SI
+    e += 8; mem[e] = PSH
+    e += 8; mem[e] = IMM; e += 8; mem[e] = 8 if (ty > PTR) else 1
+    e += 8; mem[e] = ADD if (t == Inc)   else SUB
+    e += 8; mem[e] = SC  if (ty == CHAR) else SI
   else: print(f"{line}: bad expression"); exit(-1)
 
   while (tk if isinstance(tk, int) else ord(tk))  >= lev:
@@ -315,59 +315,59 @@ def expr(lev):
       next()
       if (mem[e] == LC or mem[e] == LI): mem[e] = PSH 
       else: print(f"{line}: bad lvalue in assignment"); exit(-1)
-      expr(Assign); e += 8*1; mem[e] = SC if ((ty := t) == CHAR) else SI
+      expr(Assign); e += 8; mem[e] = SC if ((ty := t) == CHAR) else SI
     elif (tk == Cond):
       next()
-      e += 8*1; mem[e] = BZ; e += 8*1; d = e
+      e += 8; mem[e] = BZ; e += 8; d = e
       expr(Assign)
       if (tk == ':'): next() 
       else: print(f"{line}: conditional missing colon"); exit(-1)
-      mem[d] = e + 8*3; e += 8*1; mem[e] = JMP; e += 8*1; d = e
+      mem[d] = e + 24; e += 8; mem[e] = JMP; e += 8; d = e
       expr(Cond)
-      mem[d] = e + 8*1
-    elif (tk == Lor): next(); e += 8*1; mem[e] = BNZ; e += 8*1; d = e; expr(Lan); mem[d] = e + 8*1; ty = INT
-    elif (tk == Lan): next(); e += 8*1; mem[e] = BZ;  e += 8*1; d = e; expr(Or);  mem[d] = e + 8*1; ty = INT
-    elif (tk == Or) : next(); e += 8*1; mem[e] = PSH; expr(Xor); e += 8*1; mem[e] = OR;  ty = INT
-    elif (tk == Xor): next(); e += 8*1; mem[e] = PSH; expr(And); e += 8*1; mem[e] = XOR; ty = INT
-    elif (tk == And): next(); e += 8*1; mem[e] = PSH; expr(Eq);  e += 8*1; mem[e] = AND; ty = INT
-    elif (tk == Eq):  next(); e += 8*1; mem[e] = PSH; expr(Lt);  e += 8*1; mem[e] = EQ;  ty = INT
-    elif (tk == Ne):  next(); e += 8*1; mem[e] = PSH; expr(Lt);  e += 8*1; mem[e] = NE;  ty = INT
-    elif (tk == Lt):  next(); e += 8*1; mem[e] = PSH; expr(Shl); e += 8*1; mem[e] = LT;  ty = INT
-    elif (tk == Gt):  next(); e += 8*1; mem[e] = PSH; expr(Shl); e += 8*1; mem[e] = GT;  ty = INT
-    elif (tk == Le):  next(); e += 8*1; mem[e] = PSH; expr(Shl); e += 8*1; mem[e] = LE;  ty = INT
-    elif (tk == Ge):  next(); e += 8*1; mem[e] = PSH; expr(Shl); e += 8*1; mem[e] = GE;  ty = INT
-    elif (tk == Shl): next(); e += 8*1; mem[e] = PSH; expr(Add); e += 8*1; mem[e] = SHL; ty = INT
-    elif (tk == Shr): next(); e += 8*1; mem[e] = PSH; expr(Add); e += 8*1; mem[e] = SHR; ty = INT
+      mem[d] = e + 8
+    elif (tk == Lor): next(); e += 8; mem[e] = BNZ; e += 8; d = e; expr(Lan); mem[d] = e + 8; ty = INT
+    elif (tk == Lan): next(); e += 8; mem[e] = BZ;  e += 8; d = e; expr(Or);  mem[d] = e + 8; ty = INT
+    elif (tk == Or) : next(); e += 8; mem[e] = PSH; expr(Xor); e += 8; mem[e] = OR;  ty = INT
+    elif (tk == Xor): next(); e += 8; mem[e] = PSH; expr(And); e += 8; mem[e] = XOR; ty = INT
+    elif (tk == And): next(); e += 8; mem[e] = PSH; expr(Eq);  e += 8; mem[e] = AND; ty = INT
+    elif (tk == Eq):  next(); e += 8; mem[e] = PSH; expr(Lt);  e += 8; mem[e] = EQ;  ty = INT
+    elif (tk == Ne):  next(); e += 8; mem[e] = PSH; expr(Lt);  e += 8; mem[e] = NE;  ty = INT
+    elif (tk == Lt):  next(); e += 8; mem[e] = PSH; expr(Shl); e += 8; mem[e] = LT;  ty = INT
+    elif (tk == Gt):  next(); e += 8; mem[e] = PSH; expr(Shl); e += 8; mem[e] = GT;  ty = INT
+    elif (tk == Le):  next(); e += 8; mem[e] = PSH; expr(Shl); e += 8; mem[e] = LE;  ty = INT
+    elif (tk == Ge):  next(); e += 8; mem[e] = PSH; expr(Shl); e += 8; mem[e] = GE;  ty = INT
+    elif (tk == Shl): next(); e += 8; mem[e] = PSH; expr(Add); e += 8; mem[e] = SHL; ty = INT
+    elif (tk == Shr): next(); e += 8; mem[e] = PSH; expr(Add); e += 8; mem[e] = SHR; ty = INT
     elif (tk == Add):
-      next(); e += 8*1; mem[e] = PSH; expr(Mul)
-      if ((ty := t) > PTR): e += 8*1; mem[e] = PSH; e += 8*1; mem[e] = IMM; e += 8*1; mem[e] = 8; e += 8*1; mem[e] = MUL
-      e += 8*1; mem[e] = ADD
+      next(); e += 8; mem[e] = PSH; expr(Mul)
+      if ((ty := t) > PTR): e += 8; mem[e] = PSH; e += 8; mem[e] = IMM; e += 8; mem[e] = 8; e += 8; mem[e] = MUL
+      e += 8; mem[e] = ADD
     elif (tk == Sub):
-      next(); e += 8*1; mem[e] = PSH; expr(Mul)
-      if (t > PTR and t == ty): e += 8*1; mem[e] = SUB; e += 8*1; mem[e] = PSH; e += 8*1; mem[e] = IMM; e += 8*1; mem[e] = 8; e += 8*1; mem[e] = DIV; ty = INT
-      elif ((ty := t) > PTR): e += 8*1; mem[e] = PSH; e += 8*1; mem[e] = IMM; e += 8*1; mem[e] = 8; e += 8*1; mem[e] = MUL; e += 8*1; mem[e] = SUB
-      else: e += 8*1; mem[e] = SUB
-    elif (tk == Mul): next(); e += 8*1; mem[e] = PSH; expr(Inc); e += 8*1; mem[e] = MUL; ty = INT
-    elif (tk == Div): next(); e += 8*1; mem[e] = PSH; expr(Inc); e += 8*1; mem[e] = DIV; ty = INT
-    elif (tk == Mod): next(); e += 8*1; mem[e] = PSH; expr(Inc); e += 8*1; mem[e] = MOD; ty = INT
+      next(); e += 8; mem[e] = PSH; expr(Mul)
+      if (t > PTR and t == ty): e += 8; mem[e] = SUB; e += 8; mem[e] = PSH; e += 8; mem[e] = IMM; e += 8; mem[e] = 8; e += 8; mem[e] = DIV; ty = INT
+      elif ((ty := t) > PTR): e += 8; mem[e] = PSH; e += 8; mem[e] = IMM; e += 8; mem[e] = 8; e += 8; mem[e] = MUL; e += 8; mem[e] = SUB
+      else: e += 8; mem[e] = SUB
+    elif (tk == Mul): next(); e += 8; mem[e] = PSH; expr(Inc); e += 8; mem[e] = MUL; ty = INT
+    elif (tk == Div): next(); e += 8; mem[e] = PSH; expr(Inc); e += 8; mem[e] = DIV; ty = INT
+    elif (tk == Mod): next(); e += 8; mem[e] = PSH; expr(Inc); e += 8; mem[e] = MOD; ty = INT
     elif (tk == Inc or tk == Dec):
-      if (mem[e] == LC): mem[e] = PSH; e += 8*1; mem[e] = LC
-      elif (mem[e] == LI): mem[e] = PSH; e += 8*1; mem[e] = LI
+      if (mem[e] == LC): mem[e] = PSH; e += 8; mem[e] = LC
+      elif (mem[e] == LI): mem[e] = PSH; e += 8; mem[e] = LI
       else: print(f"{line}: bad lvalue in post-increment"); exit(-1)
-      e += 8*1; mem[e] = PSH; e += 8*1; mem[e] = IMM; e += 8*1; mem[e] = 8 if (ty > PTR) else 1
-      e += 8*1; mem[e] = ADD if(tk == Inc) else SUB
-      e += 8*1; mem[e] = SC if (ty == CHAR) else SI
-      e += 8*1; mem[e] = PSH; e += 8*1; mem[e] = IMM; e += 8*1; mem[e] = 8 if (ty > PTR) else 1
-      e += 8*1; mem[e] = SUB if (tk == Inc) else ADD
+      e += 8; mem[e] = PSH; e += 8; mem[e] = IMM; e += 8; mem[e] = 8 if (ty > PTR) else 1
+      e += 8; mem[e] = ADD if(tk == Inc) else SUB
+      e += 8; mem[e] = SC if (ty == CHAR) else SI
+      e += 8; mem[e] = PSH; e += 8; mem[e] = IMM; e += 8; mem[e] = 8 if (ty > PTR) else 1
+      e += 8; mem[e] = SUB if (tk == Inc) else ADD
       next()
     elif (tk == Brak):
-      next(); e += 8*1; mem[e] = PSH; expr(Assign)
+      next(); e += 8; mem[e] = PSH; expr(Assign)
       if (tk == ']'): next()
       else: print(f"{line}: close bracket expected"); exit(-1)
-      if (t > PTR): e += 8*1; mem[e] = PSH; e += 8*1; mem[e] = IMM; e += 8*1; mem[e] = 8; e += 8*1; mem[e] = MUL
+      if (t > PTR): e += 8; mem[e] = PSH; e += 8; mem[e] = IMM; e += 8; mem[e] = 8; e += 8; mem[e] = MUL
       elif (t < PTR): print(f"{line}: pointer type expected"); exit(-1)
-      e += 8*1; mem[e] = ADD
-      e += 8*1; mem[e] = LC if ((ty := t - PTR) == CHAR) else LI
+      e += 8; mem[e] = ADD
+      e += 8; mem[e] = LC if ((ty := t - PTR) == CHAR) else LI
     else: print(f"{line}: compiler error tk={tk}"); exit(-1)
 
 def stmt():
@@ -381,29 +381,29 @@ def stmt():
     expr(Assign)
     if (tk == ')'): next() 
     else: print(f"{line}: close paren expected"); exit(-1)
-    e += 8*1; mem[e] = BZ;  e += 8*1; b = e
+    e += 8; mem[e] = BZ;  e += 8; b = e
     stmt()
     if (tk == Else):
-      mem[b] = (int)(e + 8*3); e += 8*1; mem[e] = JMP;  e += 8*1; b = e
+      mem[b] = (int)(e + 24); e += 8; mem[e] = JMP;  e += 8; b = e
       next()
       stmt()
-    mem[b] = (int)(e + 8*1)
+    mem[b] = (int)(e + 8)
   elif (tk == While):
     next()
-    a = e + 8*1
+    a = e + 8
     if (tk == '('): next() 
     else: print(f"{line}: open paren expected"); exit(-1)
     expr(Assign)
     if (tk == ')'): next() 
     else: print(f"{line}: close paren expected"); exit(-1)
-    e += 8*1; mem[e] = BZ;  e += 8*1; b = e
+    e += 8; mem[e] = BZ;  e += 8; b = e
     stmt()
-    e += 8*1; mem[e] = JMP; e += 8*1; mem[e] = a
-    mem[b] = (int)(e + 8*1)
+    e += 8; mem[e] = JMP; e += 8; mem[e] = a
+    mem[b] = (int)(e + 8)
   elif (tk == Return):
     next()
     if (tk != ';'): expr(Assign)
-    e += 8*1; mem[e] = LEV
+    e += 8; mem[e] = LEV
     if (tk == ';'): next() 
     else: print(f"{line}: semicolon expected"); exit(-1)
   elif (tk == '{'):
@@ -422,7 +422,7 @@ if __name__=='__main__':
   fd = bt = ty = idmain = 0
   pc = sp = p = a = cycle = 0
   i = t = 0
-  fd = fd2 = 0
+  fd = 0
   
   args = sys.argv[1:]
   if len(args)> 0 and args[0] == '-s': 
@@ -455,7 +455,7 @@ if __name__=='__main__':
   lp = p = len(source)
 
   with open(args[0], 'r') as f: 
-        source2 = f.read()
+    source2 = f.read()
   source = source + source2 + '\0'
 
   line = 1
@@ -492,7 +492,7 @@ if __name__=='__main__':
       mem[id+Type] = ty
       if (tk == '('):
         mem[id+Class] = Fun
-        mem[id+Val] = e + 8*1
+        mem[id+Val] = e + 8
         next(); i = 0
         while (tk != ')'):          
           ty = INT
@@ -526,12 +526,12 @@ if __name__=='__main__':
             next()
             if (tk == ','): next()
           next()
-        e += 8*1
+        e += 8
         mem[e] = ENT
-        e += 8*1
+        e += 8
         mem[e] = i - loc
         while (tk != '}'): stmt()
-        e += 8*1
+        e += 8
         mem[e] = LEV
         id = sym
         while (memInt(id+Tk)):
@@ -554,20 +554,20 @@ if __name__=='__main__':
 
   bp = sp = sp + poolsz
   stack = sp - 8
-  sp -= 8*1; mem[sp] = EXIT
-  sp -= 8*1; mem[sp] = PSH; t = sp
-  sp -= 8*1; mem[sp] = len(args)
-  sp -= 8*1; mem[sp] = data
+  sp -= 8; mem[sp] = EXIT
+  sp -= 8; mem[sp] = PSH; t = sp
+  sp -= 8; mem[sp] = len(args)
+  sp -= 8; mem[sp] = data
   tmp = data + 8*len(args)
   for ii in range(len(args)):
     mem[data] = tmp
     mem[tmp] = args[ii]+'\0'
-    data += 8*1
+    data += 8
     tmp  += len(args[ii])+1
-  sp -= 8*1; mem[sp] = t 
+  sp -= 8; mem[sp] = t 
   cycle = 0
   while True:
-    i = memInt(pc);  pc += 8*1; cycle += 1
+    i = memInt(pc);  pc += 8; cycle += 1
     if (debug):
       print("{}> {:8.4s}".format(cycle,
          "LEA ,IMM ,JMP ,JSR ,BZ  ,BNZ ,ENT ,ADJ ,LEV ,LI  ,LC  ,SI  ,SC  ,PSH ,"
@@ -578,73 +578,55 @@ if __name__=='__main__':
 
     if   (i == LEA): 
       a = bp + 8*memInt(pc)
-      pc += 8*1
-    elif (i == IMM): a = memInt(pc);  pc += 8*1
+      pc += 8
+    elif (i == IMM): a = memInt(pc);  pc += 8
     elif (i == JMP): pc = memInt(pc)
-    elif (i == JSR): sp -= 8*1; mem[sp] = pc + 8*1; pc = memInt(pc)
+    elif (i == JSR): sp -= 8; mem[sp] = pc + 8; pc = memInt(pc)
     elif (i == BZ):           
-      if (a != 0): pc += 8*1
+      if (a != 0): pc += 8
       else:        pc = memInt(pc)
     elif (i == BNZ):                      
       if (a != 0): pc = memInt(pc)
-      else:        pc += 8*1
-    elif (i == ENT): sp -= 8*1; mem[sp] = bp; bp = sp; sp = sp - memInt(pc)*8*1; pc += 8*1 
-    elif (i == ADJ): sp = sp + memInt(pc)*8*1;  pc += 8*1
-    elif (i == LEV): sp = bp; bp = memInt(sp); sp += 8*1; pc = memInt(sp); sp += 8*1
-    elif (i == LI):
-      tmp = a
-      a = memInt(a)
-    elif (i == LC):
-      tmp = a
-      a = mem[a] 
-    elif (i == SI):
-      mem[memInt(sp)] = a   
-      sp += 8*1
-    elif (i == SC):
-       mem[memInt(sp)] = chr(a)
-       sp += 8*1 
-    elif (i == PSH): 
-      sp -= 8*1; mem[sp] = a
-
-    elif (i == OR):  a = memInt(sp) |  a; sp += 8*1
-    elif (i == XOR): a = memInt(sp) ^  a; sp += 8*1
-    elif (i == AND): a = memInt(sp) &  a; sp += 8*1
-    elif (i == EQ):  a = memInt(sp) == a; sp += 8*1
-    elif (i == NE):  a = memInt(sp) != a; sp += 8*1
-    elif (i == LT):  a = memInt(sp) <  a; sp += 8*1
-    elif (i == GT):  a = memInt(sp) >  a; sp += 8*1
-    elif (i == LE):  a = memInt(sp) <= a; sp += 8*1
-    elif (i == GE):  a = memInt(sp) >= a; sp += 8*1
-    elif (i == SHL): a = memInt(sp) << a; sp += 8*1
-    elif (i == SHR): a = memInt(sp) >> a; sp += 8*1
-    elif (i == ADD): 
-      tmp = a
-      a = memInt(sp) + a
-      sp += 8*1
-    elif (i == SUB): a = memInt(sp) -  a; sp += 8*1
-    elif (i == MUL): a = memInt(sp) *  a; sp += 8*1
-    elif (i == DIV): a = memInt(sp) /  a; sp += 8*1
-    elif (i == MOD): a = memInt(sp) %  a; sp += 8*1
-
-    elif (i == OPEN): 
-      fd = open(memStr(memInt(sp+8*1)), 'rb')
-      a = fd
+      else:        pc += 8
+    elif (i == ENT): sp -= 8; mem[sp] = bp; bp = sp; sp = sp - memInt(pc)*8; pc += 8 
+    elif (i == ADJ): sp = sp + memInt(pc)*8;  pc += 8
+    elif (i == LEV): sp = bp; bp = memInt(sp); sp += 8; pc = memInt(sp); sp += 8
+    elif (i == LI):  a = memInt(a)
+    elif (i == LC):  a = mem[a] 
+    elif (i == SI):  mem[memInt(sp)] = a; sp += 8
+    elif (i == SC):  mem[memInt(sp)] = chr(a); sp += 8 
+    elif (i == PSH): sp -= 8; mem[sp] = a
+    elif (i == OR):  a = memInt(sp) |  a; sp += 8
+    elif (i == XOR): a = memInt(sp) ^  a; sp += 8
+    elif (i == AND): a = memInt(sp) &  a; sp += 8
+    elif (i == EQ):  a = memInt(sp) == a; sp += 8
+    elif (i == NE):  a = memInt(sp) != a; sp += 8
+    elif (i == LT):  a = memInt(sp) <  a; sp += 8
+    elif (i == GT):  a = memInt(sp) >  a; sp += 8
+    elif (i == LE):  a = memInt(sp) <= a; sp += 8
+    elif (i == GE):  a = memInt(sp) >= a; sp += 8
+    elif (i == SHL): a = memInt(sp) << a; sp += 8
+    elif (i == SHR): a = memInt(sp) >> a; sp += 8
+    elif (i == ADD): a = memInt(sp) + a;  sp += 8
+    elif (i == SUB): a = memInt(sp) -  a; sp += 8
+    elif (i == MUL): a = memInt(sp) *  a; sp += 8
+    elif (i == DIV): a = memInt(sp) /  a; sp += 8
+    elif (i == MOD): a = memInt(sp) %  a; sp += 8
+    elif (i == OPEN): a = fd = open(memStr(memInt(sp+8)), 'rb')
     elif (i == READ):
       lst = fd.read()
-      mem[memInt(sp+8*1):memInt(sp+8*1)+len(lst)] = lst
+      mem[memInt(sp+8):memInt(sp+8)+len(lst)] = lst
       a = len(lst)
-    elif (i == CLOS): 
-      fd.close()
-      a = 1
+    elif (i == CLOS): a = fd.close()
     elif (i == PRTF): 
-      t = sp + memInt(pc+8*1)*8*1-8
+      t = sp + memInt(pc+8)*8-8
       fmt  = memStr(memInt(t)).replace('\\n','\n')
       fmt2 = fmtSplit(fmt)    
       para = tuple([fmtTrans(fmt2, i, t-8*(i+1)) for i in range(len(fmt2))])
       print(fmt % para, end="")
     elif (i == MALC): a = mem.malloc(memInt(sp))
     elif (i == FREE): pass
-    elif (i == MSET): a = memset(memInt(sp+8*2), memInt(sp+8*1), memInt(sp))
-    elif (i == MCMP): a = memcmp(memInt(sp+8*2), memInt(sp+8*1), memInt(sp))
+    elif (i == MSET): a = memset(memInt(sp+16), memInt(sp+8), memInt(sp))
+    elif (i == MCMP): a = memcmp(memInt(sp+16), memInt(sp+8), memInt(sp))
     elif (i == EXIT): print(f"exit({memInt(sp)}) cycle = {cycle}"); sys.exit(memInt(sp))
     else: print(f"unknown instruction = {i}! cycle = {cycle}"); sys.exit(1)
