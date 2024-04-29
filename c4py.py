@@ -422,13 +422,6 @@ if __name__=='__main__':
   pc = sp = p = a = cycle = 0
   i = t = 0
   fd = 0
-  
-  # 編譯命令 -s src -d debug
-  # sys.argv = ["c4py.py","-s","-d","test.c"]
-  # sys.argv = ["c4py.py","-s","test.c"]
-  # sys.argv = ["c4py.py","-d","test.c"]
-  # sys.argv = ["c4py.py","test.c"]
-  # > python c4py.py -d test_c4.c test.c 
 
   args = sys.argv[1:]
   if len(args)> 0 and args[0] == '-s': 
