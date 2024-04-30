@@ -422,7 +422,7 @@ if __name__=='__main__':
   pc = sp = p = a = cycle = 0
   i = t = 0
   fd = 0
-  
+
   args = sys.argv[1:]
   if len(args)> 0 and args[0] == '-s': 
    src = 1; args = args[1:]
@@ -554,11 +554,11 @@ if __name__=='__main__':
   mem[sp:=sp-8] = len(args)
   mem[sp:=sp-8] = data
   tmp = data + 8*len(args)
-  for ii in range(len(args)):
+  for i in range(len(args)):
     mem[data] = tmp
-    mem[tmp] = args[ii]+'\0'
+    mem[tmp] = args[i]+'\0'
     data += 8
-    tmp  += len(args[ii])+1
+    tmp  += len(args[i])+1
   mem[sp:=sp-8] = t 
   cycle = 0
   while True:
@@ -588,7 +588,7 @@ if __name__=='__main__':
     elif (i == LEV): sp = bp; bp = memInt(sp); sp += 8; pc = memInt(sp); sp += 8
     elif (i == LI):  a = memInt(a)
     elif (i == LC):  a = mem[a] 
-    elif (i == SI):  mem[memInt(sp)] = a;      sp += 8
+    elif (i == SI):  mem[memInt(sp)] = a; sp += 8
     elif (i == SC):  mem[memInt(sp)] = chr(a); sp += 8 
     elif (i == PSH): mem[sp:=sp-8] = a
     elif (i == OR):  a = memInt(sp) |  a; sp += 8
