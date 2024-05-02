@@ -1,5 +1,5 @@
 # c4py
-a tiny C Compiller & VM, Python lang port of "c4 - C in four functions", wich can allow self-compilation<p>
+a tiny C Compiller & VM, Python lang port of "c4 - C in four functions", which can allow self-compilation.<p>
 
 
 &gt; python c4py.py hello.c<br>
