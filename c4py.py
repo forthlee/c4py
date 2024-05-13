@@ -93,7 +93,7 @@ debug = 0
 
 ( LEA ,IMM ,JMP ,JSR ,BZ  ,BNZ ,ENT ,ADJ ,LEV ,LI  ,LC  ,SI  ,SC  ,PSH ,
   OR  ,XOR ,AND ,EQ  ,NE  ,LT  ,GT  ,LE  ,GE  ,SHL ,SHR ,ADD ,SUB ,MUL ,DIV ,MOD ,
-  OPEN,READ,CLOS,PRTF,MALC,FREE,MSET,MCMP,EXIT ) = range(39)
+  OPEN,READ,CLOS,PRTF,MALC,FREE,MSET,MCMP,GETC,EXIT) = range(40)
 
 ( CHAR, INT, PTR ) = range(3)
 ( Tk, Hash, Name, Class, Type, Val, HClass, HType, HVal, Idsz ) = [i*8 for i in range(10)]
@@ -110,8 +110,8 @@ def next():
         while (le < e):          
           le += 8
           print("    {:8.4s}".format("LEA ,IMM ,JMP ,JSR ,BZ  ,BNZ ,ENT ,ADJ ,LEV ,LI  ,LC  ,SI  ,SC  ,PSH ,"
-                                 "OR  ,XOR ,AND ,EQ  ,NE  ,LT  ,GT  ,LE  ,GE  ,SHL ,SHR ,ADD ,SUB ,MUL ,DIV ,MOD ,"
-                                 "OPEN,READ,CLOS,PRTF,MALC,FREE,MSET,MCMP,EXIT,"[mem[le] * 5:mem[le] * 5+4]), end="")
+                                     "OR  ,XOR ,AND ,EQ  ,NE  ,LT  ,GT  ,LE  ,GE  ,SHL ,SHR ,ADD ,SUB ,MUL ,DIV ,MOD ,"
+                                     "OPEN,READ,CLOS,PRTF,MALC,FREE,MSET,MCMP,GETC,EXIT,"[mem[le] * 5:mem[le] * 5+4]), end="")
           if (mem[le] <= ADJ): le += 8; print(memInt(le)) 
           else: print()
       line += 1 
@@ -422,7 +422,8 @@ if __name__=='__main__':
   pc = sp = p = a = cycle = 0
   i = t = 0
   fd = 0
-
+  keybuf = ""
+  
   args = sys.argv[1:]
   if len(args)> 0 and args[0] == '-s': 
    src = 1; args = args[1:]
@@ -438,7 +439,7 @@ if __name__=='__main__':
   if ((sp   := mem.malloc(poolsz)) == 0): print(f"could not malloc({poolsz}) stack area\n"); exit(-1)
   le = e
   
-  source = "char else enum if int return sizeof while open read close printf malloc free memset memcmp exit void main"
+  source = "char else enum if int return sizeof while open read close printf malloc free memset memcmp getchar exit void main"
   source += '\0'
   p = 0
   i = Char
@@ -623,5 +624,9 @@ if __name__=='__main__':
     elif (i == FREE): pass
     elif (i == MSET): a = memset(memInt(sp+16), memInt(sp+8), memInt(sp))
     elif (i == MCMP): a = memcmp(memInt(sp+16), memInt(sp+8), memInt(sp))
+    elif (i == GETC): 
+      if len(keybuf) == 0: keybuf = input()+'\n'
+      a = ord(keybuf[0])
+      keybuf = keybuf[1:]
     elif (i == EXIT): print(f"exit({memInt(sp)}) cycle = {cycle}"); sys.exit(memInt(sp))
     else: print(f"unknown instruction = {i}! cycle = {cycle}"); sys.exit(1)
