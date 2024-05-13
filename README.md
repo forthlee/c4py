@@ -12,5 +12,9 @@ A tiny C compiler and virtual machine, a Python language port of 'c4 - C in four
 
 &gt; python c4py.py c4.c c4.c hello.c<p>
 
+&gt; python c4py.py tests/brainf.c "\`cat tests/hello.bf\`" 30000<br>
+&gt; python c4py.py tests/brainf.c "\`cat tests/prime.bf\`" 30000<br>
+Primes up to: 15<p>
+
 c4.c - C in four functions<br>
 https://github.com/rswier/c4
