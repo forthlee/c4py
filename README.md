@@ -1,4 +1,4 @@
-# c4py: a Python port of c4
+# c4py : a Python port of c4 - C in four functions
 A tiny C compiler and virtual machine, a Python language port of 'c4 - C in four functions', capable of enabling self-compilation.<p>
 
 
