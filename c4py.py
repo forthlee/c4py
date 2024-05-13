@@ -422,7 +422,7 @@ if __name__=='__main__':
   pc = sp = p = a = cycle = 0
   i = t = 0
   fd = 0
-  keybuf = ""
+  keybuf = []
   
   args = sys.argv[1:]
   if len(args)> 0 and args[0] == '-s': 
@@ -625,8 +625,8 @@ if __name__=='__main__':
     elif (i == MSET): a = memset(memInt(sp+16), memInt(sp+8), memInt(sp))
     elif (i == MCMP): a = memcmp(memInt(sp+16), memInt(sp+8), memInt(sp))
     elif (i == GETC): 
-      if len(keybuf) == 0: keybuf = input()+'\n'
-      a = ord(keybuf[0])
-      keybuf = keybuf[1:]
+      if keybuf == []:
+        keybuf = list(input() + "\n")
+      a = ord(keybuf.pop(0))
     elif (i == EXIT): print(f"exit({memInt(sp)}) cycle = {cycle}"); sys.exit(memInt(sp))
     else: print(f"unknown instruction = {i}! cycle = {cycle}"); sys.exit(1)
