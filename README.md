@@ -1,6 +1,6 @@
-# c4py - A Python-Powered C Compiler
+# c4py - A Python-Based C4 Compiler
 
-`c4py` is a Python-based C compiler inspired by Robert Swierczek's [c4](https://github.com/rswier/c4), a minimalist C compiler implemented in four functions. This project reimplements `c4` in Python, maintaining its simplicity while leveraging Python's clarity and flexibility. It compiles a subset of C code into an intermediate representation and executes it using a virtual machine (VM).
+`c4py` is a Python-based C4 compiler inspired by Robert Swierczek's [c4](https://github.com/rswier/c4), a minimalist C compiler implemented in four functions. This project reimplements `c4` in Python, maintaining its simplicity while leveraging Python's clarity and flexibility. It compiles a subset of C code into an intermediate representation and executes it using a virtual machine (VM).
 
 ## Features
 - **Python Implementation**: Rewrites `c4`'s core functionality in Python for readability and maintainability.
