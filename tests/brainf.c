@@ -16,7 +16,7 @@
 int main(int a, char**s){
 	int *b, *z, p;
 	char *c, v, w;
-	int64_t fd, i, poolsz;
+	int fd, i, poolsz;
 
 	if(a < 2)
 		return printf("Usage: %s file.bf\n", s[0]);
