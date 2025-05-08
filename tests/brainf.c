@@ -6,6 +6,7 @@
 
 // Usage:
 //   ./c4 tests/brainf.c prime.bf
+//   Primes up to: 10
 
 #include <stdio.h>
 #include <stdlib.h>
